@@ -8,8 +8,8 @@ I also used better Python project practices such as adding a main() function.
 I worked with more complex data structures (e.g. storing search results in list of dicts).  
 And overall, this project was a little more custom than the last so I couldn't rely on full tutorials as much and had to turn to docs and other sources of help more.  
 ## Script in action  
-Example search results: ![](images/csv_example.png)  
-Example email sent after search: ![](images/email_example.png)  
+Example search results:  ![](images/csv_example.png)  
+Example email sent after search:  ![](images/email_example.png)  
 ## Next steps/improvements  
 Save results to database so one could query it later and look at price history or something  
 Scrape other sites like Amazon  
