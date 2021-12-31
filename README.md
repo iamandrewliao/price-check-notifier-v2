@@ -1,5 +1,5 @@
 # price-check-notifier-v2  
-Improving on a past project I did (price-check-notifier) which. Unfortunately, my free Twilio trial ended. Fortunately, I made some big changes.  
+Improving on a past project I did (price-check-notifier) which used Twilio API to send whatsapp notifications once an Amazon product fell below a set price. Unfortunately, my free Twilio trial ended. Fortunately, I made some big changes.  
 ## What does it do?  
 Given a component (currently inputted by user but can be hardcoded in for automation purposes), this script searches Newegg and Reddit for the component. On Reddit, the top daily posts are searched (but this can be changed easily, I just did it assuming one might automate the script to run daily). The search results containing name of product, price, link/url, and source (newegg or reddit) are then written to a CSV and sent to an email (can be easily changed to an SMS).  
 ## What did I learn?  
