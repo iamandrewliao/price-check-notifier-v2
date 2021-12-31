@@ -10,6 +10,7 @@ And overall, this project was a little more custom than the last so I couldn't r
 ## Script in action  
 Example search results:  
 ![](images/csv_example.png)  
+
 Example email sent after search:  
 ![](images/email_example.png)  
 ## Next steps/improvements  
