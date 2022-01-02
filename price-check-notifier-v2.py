@@ -6,6 +6,9 @@
 #https://www.geeksforgeeks.org/scraping-reddit-using-python/
 #https://stackoverflow.com/questions/2602390/is-it-possible-for-beautifulsoup-to-work-in-a-case-insensitive-manner
 #https://scipython.com/book2/chapter-4-the-core-python-language-ii/questions/sorting-a-list-containing-none/
+#https://www.sqlite.org/datatype3.html
+#https://stackoverflow.com/questions/44549167/construct-tuple-from-dictionary-values/44549210
+#https://stackoverflow.com/questions/10913080/python-how-to-insert-a-dictionary-to-a-sqlite-database
 
 import requests
 import re
@@ -17,6 +20,7 @@ from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from datetime import date
 import praw
+import sqlite3
 
 #note: this script is meant to be run daily; hence, the reddit function searches daily posts
 
@@ -31,6 +35,8 @@ def newegg(component):
 	pages = int(str(pages_raw).split("/")[-2].split(">")[-1][:-1]) #parses "x/y" to find the total number of pages
 
 	for i in range(1, pages+1):
+		today = date.today()
+
 		url = f"https://www.newegg.com/p/pl?d={component}&page={i}"
 		page = requests.get(url).text
 		doc = BeautifulSoup(page, "html.parser")
@@ -50,10 +56,11 @@ def newegg(component):
 				if price_strong is not None: #some of these products don't have prices so we skip them
 					link = parent['href']
 					price = price_strong.text
-					items_found.append({"item":item, "price ($)":int(price.replace(",","")), "link":link, "source":"Newegg"})
+					items_found.append({"item": item, "price ($)": int(price.replace(",","")), "link": link, "source": "Newegg", "date": today})
 	#example output: {'item': 'XFX Radeon RX 570 8GB DDR5 PCI Express 3.0 CrossFireX Support Video Card RX-570P8DFD6', 'price ($)': 599, 'link': 'https://www.newegg.com/xfx-radeon-rx-570-rx-570p8dfd6/p/N82E16814150815?Description=570&cm_re=570-_-14-150-815-_-Product', 'source': 'Newegg'}
 
 def reddit(component):
+	today = date.today()
 	# There are 2 types of PRAW instances: read-only and authorized. We only need to read.
 	reddit_read_only = praw.Reddit(client_id="bwd1K8xrCwIP1J2PKz5j4A",  # your client id
 								   client_secret="x1HIMtyYoHqu5uuBYJfhHM4dBmkwPw",  # your client secret
@@ -65,7 +72,7 @@ def reddit(component):
 			# setting price = None because reddit post titles are irregular and the prices are hard to extract
 			# e.g. there might be a shipping cost e.g. "$580 + $7.52 shipping" or mail-in rebates
 			# I'll just let the user figure it out
-			items_found.append({"item": post.title, "price ($)": None, "link": post.url, "source": "r/buildapcsales"})
+			items_found.append({"item": post.title, "price ($)": None, "link": post.url, "source": "r/buildapcsales", "date": today})
 
 def email_alert(items_found, component, to):
 	#sorting items_found by price 
@@ -105,6 +112,17 @@ def main():
 	newegg(component)
 	reddit(component)
 	email_alert(items_found, component, "iamandrewliao@gmail.com")
+
+	# connects to or creates (if doesn't exist) a database
+	conn = sqlite3.connect('price-check-notifier-v2.db')
+	c = conn.cursor()
+	# NOTE: for some reason, you can't name the column "price ($)"; the parentheses must cause some issue
+	c.execute("""CREATE TABLE IF NOT EXISTS all_items (items TEXT, price_$ INT, link TEXT, source TEXT, date DATE);""")
+	items_found_converted = [(i["item"], i["price ($)"], i["link"], i["source"], i["date"]) for i in items_found]
+	c.executemany("INSERT INTO all_items VALUES (?,?,?,?,?)", items_found_converted)
+	conn.commit()
+	print("~ sql insert complete ~")
+	conn.close()
 
 if __name__=='__main__':
 	main()
