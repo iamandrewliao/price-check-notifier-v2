@@ -14,6 +14,6 @@ Example search results:
 Example email sent after search:  
 ![](images/email_example.png)  
 ## Next steps/improvements  
-Time series forecasting using price data stored in the SQL table.  
+Time series forecasting using price data stored in the SQL table  
 Scrape other sites like Amazon and eBay  
 Web app and/or UI
