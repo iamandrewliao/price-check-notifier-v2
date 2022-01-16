@@ -1,14 +1,14 @@
 #credit: 
-#https://www.youtube.com/watch?v=zAEfWiC_KBU&t=939s
-#https://www.youtube.com/watch?v=B1IsCbXp0uE
-#https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-#https://djangocentral.com/sending-emails-with-csv-attachment-using-python/
-#https://www.geeksforgeeks.org/scraping-reddit-using-python/
-#https://stackoverflow.com/questions/2602390/is-it-possible-for-beautifulsoup-to-work-in-a-case-insensitive-manner
-#https://scipython.com/book2/chapter-4-the-core-python-language-ii/questions/sorting-a-list-containing-none/
-#https://www.sqlite.org/datatype3.html
-#https://stackoverflow.com/questions/44549167/construct-tuple-from-dictionary-values/44549210
-#https://stackoverflow.com/questions/10913080/python-how-to-insert-a-dictionary-to-a-sqlite-database
+#1) https://www.youtube.com/watch?v=zAEfWiC_KBU&t=939s
+#2) https://www.youtube.com/watch?v=B1IsCbXp0uE
+#3) https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+#4) https://djangocentral.com/sending-emails-with-csv-attachment-using-python/
+#5) https://www.geeksforgeeks.org/scraping-reddit-using-python/
+#6) https://stackoverflow.com/questions/2602390/is-it-possible-for-beautifulsoup-to-work-in-a-case-insensitive-manner
+#7) https://scipython.com/book2/chapter-4-the-core-python-language-ii/questions/sorting-a-list-containing-none/
+#8) https://www.sqlite.org/datatype3.html
+#9) https://stackoverflow.com/questions/44549167/construct-tuple-from-dictionary-values/44549210
+#10) https://stackoverflow.com/questions/10913080/python-how-to-insert-a-dictionary-to-a-sqlite-database
 
 import requests
 import re
@@ -62,9 +62,9 @@ def newegg(component):
 def reddit(component):
 	today = date.today()
 	# There are 2 types of PRAW instances: read-only and authorized. We only need to read.
-	reddit_read_only = praw.Reddit(client_id="bwd1K8xrCwIP1J2PKz5j4A",  # your client id
-								   client_secret="x1HIMtyYoHqu5uuBYJfhHM4dBmkwPw",  # your client secret
-								   user_agent="price-check-notifier-v2")  # your user agent
+	reddit_read_only = praw.Reddit(client_id="CLIENT_ID",  # your client id
+								   client_secret="CLIENT_SECRET",  # your client secret
+								   user_agent="NAME OF YOUR PROGRAM")  # your user agent
 	# Extracting information from r/buildapcsales and adding it to items_found
 	subreddit = reddit_read_only.subreddit("buildapcsales")
 	for post in subreddit.top("day"):
@@ -86,8 +86,8 @@ def email_alert(items_found, component, to):
 		writer.writerows(items_found)
 
 	msg = MIMEMultipart()
-	user = "andrewliao.2018@gmail.com"
-	password = "idzgqgizirvksqta"
+	user = "EMAIL YOU WANT TO SEND FROM"
+	password = "PASSWORD (SEE CREDIT SOURCE 2 ABOVE)"
 	msg['from'] = user
 	msg['subject'] = f"PC Component Report: {date.today().strftime('%B %d %Y')}"
 	msg['to'] = to
@@ -111,7 +111,7 @@ def main():
 	component = input("What part are you searching for? ")
 	newegg(component)
 	reddit(component)
-	email_alert(items_found, component, "iamandrewliao@gmail.com")
+	email_alert(items_found, component, "EMAIL YOU WANT TO SEND TO")
 
 	# connects to or creates (if doesn't exist) a database
 	conn = sqlite3.connect('price-check-notifier-v2.db')
